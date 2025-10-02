@@ -44,13 +44,13 @@ class BookListView: UIView {
 
     
     private(set) lazy var tagsHStack: UIView = {
-        let rect1 = rect()
-        let rect2 = rect()
-        let rect3 = rect()
-        let rect4 = rect()
-        let rect5 = rect()
-        
-        let stackView = UIStackView(arrangedSubviews: [rect1, rect2, rect3, rect4, rect5])
+        let button_1 = labelButton(width: 50, height: 25, text: "all", fontSize: 12)
+        let button_2 = labelButton(width: 50, height: 25, text: "favs", fontSize: 12)
+        let button_3 = labelButton(width: 50, height: 25, text: "now", fontSize: 12)
+        let button_4 = labelButton(width: 50, height: 25, text: "done", fontSize: 12)
+        let button_5 = labelButton(width: 50, height: 25, text: "want", fontSize: 12)
+                
+        let stackView = UIStackView(arrangedSubviews: [button_1, button_2, button_3, button_4, button_5])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.distribution = .equalSpacing
@@ -88,11 +88,23 @@ class BookListView: UIView {
     //MARK: - Subviews Funcs
     
     func labelButton(width: CGFloat, height: CGFloat, text: String, fontSize: CGFloat) -> UIButton {
+        var isActive: Bool = false
+        
         let button = squareButton(width: width, height: height)
         
         button.setTitle(text, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: fontSize, weight: .regular)
         button.setTitleColor(.black, for: .normal)
+        
+        button.backgroundColor = isActive ? .sOrange : .sBege
+        
+//        let action = UIAction { [weak self] _ in
+        let action = UIAction { _ in
+            isActive = !isActive
+            button.backgroundColor = isActive ? .sOrange : .sBege
+        }
+        
+        button.addAction(action, for: .touchUpInside)
         
         return button
     }
@@ -114,7 +126,6 @@ class BookListView: UIView {
         return button
     }
     
-    //nao precisa mais -- Turn into view
     func squareButton(width: CGFloat, height: CGFloat) -> UIButton {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -132,22 +143,21 @@ class BookListView: UIView {
         return button
     }
     
-    //TODO: - TURN INTO BUTTON WITH COLOR
-    func rect() -> UIView {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.backgroundColor = .sOrange
-        view.layer.borderWidth = 1.5
-        view.layer.borderColor = UIColor.black.cgColor
-        
-        NSLayoutConstraint.activate([
-            view.widthAnchor.constraint(equalToConstant: 50),
-            view.heightAnchor.constraint(equalToConstant: 25),
-        ])
-        
-        return view
-    }
+//    func rect() -> UIView {
+//        let view = UIView()
+//        view.translatesAutoresizingMaskIntoConstraints = false
+//        
+//        view.backgroundColor = .sOrange
+//        view.layer.borderWidth = 1.5
+//        view.layer.borderColor = UIColor.black.cgColor
+//        
+//        NSLayoutConstraint.activate([
+//            view.widthAnchor.constraint(equalToConstant: 50),
+//            view.heightAnchor.constraint(equalToConstant: 25),
+//        ])
+//        
+//        return view
+//    }
     
     func makeThreeColumnSelfSizingLayout() -> UICollectionViewLayout {
         let spacing: CGFloat = 2

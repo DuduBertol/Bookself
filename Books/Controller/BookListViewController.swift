@@ -74,6 +74,8 @@ extension BookListViewController: BookListViewDelegate{
     func didTapAddButton() {
         //add book
         print("add book")
+        let newBookVC = NewBookViewController()
+        present(newBookVC, animated: true)
     }
     
     
