@@ -112,19 +112,10 @@ extension BookListViewController: UICollectionViewDelegateFlowLayout {
         ///a Entity vira Struct
         let bookStruct = entity.toStruct()
         
-        let bookVC = BookViewController(book: bookStruct)
-        present(bookVC, animated: true)
-
-//        if let toStruct = (entity as BookEntity).toStruct as (() -> Book)? {
-//            let bookStruct = entity.toStruct()
-//            let bookVC = BookViewController(book: bookStruct)
-//            present(bookVC, animated: true)
-//            return
-//        }
-
-        // Caso seu BookViewController aceite BookEntity diretamente, adapte aqui:
-        // let bookVC = BookViewController(bookEntity: entity)
-        // present(bookVC, animated: true)
+        let newBookVC = NewBookViewController(book: bookStruct)
+        present(newBookVC, animated: true)
+//        let bookVC = BookViewController(book: bookStruct)
+//        present(bookVC, animated: true)
     }
 }
 

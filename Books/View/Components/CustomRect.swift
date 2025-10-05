@@ -1,34 +1,27 @@
 //
-//  CustomTextField.swift
+//  CustomRect.swift
 //  Books
 //
 //  Created by Eduardo Bertol on 05/10/25.
 //
 
+
 import Foundation
 import UIKit
-
-class CustomTextField: UITextField {
+class CustomRect: UIView {
     
     //MARK: - Subviews
     
     
     //MARK: - Initializers
-    init(fontSize: CGFloat, placeholderText: String = "type here...", alignment: NSTextAlignment = .left) {
+    init() {
         super.init(frame: .zero)
         
         translatesAutoresizingMaskIntoConstraints = false
         
-        font = UIFont.systemFont(ofSize: fontSize, weight: .regular)
-        textColor = .black
-        textAlignment = alignment
-        placeholder = placeholderText
-        autocorrectionType = .no
-        
-        attributedPlaceholder = NSAttributedString(
-            string: placeholderText,
-            attributes: [.foregroundColor: UIColor.sBegeOpaque]
-        )
+        backgroundColor = .clear
+        layer.borderWidth = 1.5
+        layer.borderColor = UIColor.black.cgColor
         
         addSubViews()
         setupConstraints()
@@ -39,7 +32,6 @@ class CustomTextField: UITextField {
     }
     
     //MARK: - Setup Methods
-    
     private func addSubViews() {
         
     }
@@ -47,6 +39,4 @@ class CustomTextField: UITextField {
     private func setupConstraints() {
         
     }
-
 }
-

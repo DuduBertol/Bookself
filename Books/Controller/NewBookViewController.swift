@@ -15,10 +15,14 @@ class NewBookViewController: UIViewController {
     private let newBookView: NewBookView
     
     private let bookRepository = BookRepository()
+    
     private var selectedCoverImage: UIImage?
     
-    init() {
-        newBookView = NewBookView()
+    
+    
+    //MARK: - Initializers
+    init(book: Book? = nil) {
+        newBookView = NewBookView(book: book)
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -34,6 +38,7 @@ class NewBookViewController: UIViewController {
         view = newBookView
         
         newBookView.delegate = self
+    
         
         view.backgroundColor = .sBege
     }
@@ -68,12 +73,34 @@ class NewBookViewController: UIViewController {
     }
 }
 
+
+
+//MARK: - ============== -
+
+
+
+//MARK: - NewBookViewDelegate
 extension NewBookViewController: NewBookViewDelegate {
-    
+    //Create
     func didTapAddCover() {
         presentPhotoPicker()
     }
     
+    //Update 
+    func didTapOptionsButton() {
+        print("Option Button")
+    }
+    
+    func didTapEditButton() {
+        print("Edit Button")
+    }
+    
+    //Delete
+    func didTapDeleteButton() {
+        print("Delete Button")
+    }
+    
+    //Save
     func didTapDoneButton() {
         
         let title = newBookView.titleTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -103,6 +130,8 @@ extension NewBookViewController: NewBookViewDelegate {
     }
 }
 
+
+
 // MARK: - PHPicker + load image usando UIGraphicsImageRenderer
 
 extension NewBookViewController: PHPickerViewControllerDelegate {
@@ -129,7 +158,7 @@ extension NewBookViewController: PHPickerViewControllerDelegate {
                 let resized = self.resizeImageIfNeeded(image: image, maxDimension: 1200)
                 DispatchQueue.main.async{
                     self.selectedCoverImage = resized
-                    self.newBookView.addCoverButton.setImage(resized, for: .normal)
+                    self.newBookView.coverButton.setImage(resized, for: .normal)
                 }
             } else if let error = error {
                 DispatchQueue.main.async{

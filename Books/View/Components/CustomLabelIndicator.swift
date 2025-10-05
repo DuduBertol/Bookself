@@ -1,34 +1,30 @@
 //
-//  CustomTextField.swift
+//  CustomLabelIndicator.swift
 //  Books
 //
 //  Created by Eduardo Bertol on 05/10/25.
 //
 
+
 import Foundation
 import UIKit
-
-class CustomTextField: UITextField {
+class CustomLabelIndicator: UILabel {
     
     //MARK: - Subviews
     
     
     //MARK: - Initializers
-    init(fontSize: CGFloat, placeholderText: String = "type here...", alignment: NSTextAlignment = .left) {
+    init(fontSize: CGFloat, text: String) {
         super.init(frame: .zero)
         
         translatesAutoresizingMaskIntoConstraints = false
         
-        font = UIFont.systemFont(ofSize: fontSize, weight: .regular)
-        textColor = .black
-        textAlignment = alignment
-        placeholder = placeholderText
-        autocorrectionType = .no
+        self.text = text
         
-        attributedPlaceholder = NSAttributedString(
-            string: placeholderText,
-            attributes: [.foregroundColor: UIColor.sBegeOpaque]
-        )
+        font = UIFont.systemFont(ofSize: fontSize, weight: .medium)
+        textColor = .black
+        textAlignment = .left
+        numberOfLines = 0
         
         addSubViews()
         setupConstraints()
@@ -49,4 +45,3 @@ class CustomTextField: UITextField {
     }
 
 }
-
