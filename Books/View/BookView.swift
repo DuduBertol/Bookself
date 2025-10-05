@@ -25,6 +25,22 @@ class BookView: UIView {
         return imageView
     }()
     
+    private(set) lazy var optionButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+        
+        let action = UIAction { _ in
+            //option menu
+        }
+        
+        button.addAction(action, for: .touchUpInside)
+        
+        return button
+    }()
+    
+    
     private(set) lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -32,7 +48,7 @@ class BookView: UIView {
 //        label.text = "temp"
 
 //        label.font = UIFont(name: "Stardew Valley", size: 32)
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
         label.textColor = .black
         label.textAlignment = .left
         label.numberOfLines = 0
@@ -44,7 +60,7 @@ class BookView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         
-        label.font = UIFont.systemFont(ofSize: 12, weight: .regular)
+        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         label.textColor = .black
         label.textAlignment = .right
         label.numberOfLines = 0
@@ -121,7 +137,8 @@ class BookView: UIView {
     //MARK: - Setup Methods
     
     private func setup(_ book: Book) {
-        bookImage.image = UIImage(named: book.imageName)
+//        bookImage.image = UIImage(named: book.imageName)
+        bookImage.image = book.cover
         titleLabel.text = book.title
         authorLabel.text = book.author
         reviewLabel.text = book.review

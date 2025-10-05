@@ -223,7 +223,7 @@ class BookListView: UIView {
             
             tagsHStack.topAnchor.constraint(equalTo: toolBar.bottomAnchor),
             tagsHStack.bottomAnchor.constraint(equalTo: bookListCollectionView.topAnchor),
-            tagsHStack.heightAnchor.constraint(equalToConstant: 45),
+            tagsHStack.heightAnchor.constraint(greaterThanOrEqualToConstant: 45),
             tagsHStack.centerXAnchor.constraint(equalTo: centerXAnchor),
             
             bookListCollectionView.topAnchor.constraint(equalTo: tagsHStack.bottomAnchor, constant: 0),

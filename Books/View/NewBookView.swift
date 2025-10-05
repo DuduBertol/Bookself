@@ -8,27 +8,57 @@
 import Foundation
 import UIKit
 
+protocol NewBookViewDelegate: AnyObject {
+    func didTapDoneButton()
+    func didTapAddCover()
+}
+
 class NewBookView: UIView {
     
+    weak var delegate: NewBookViewDelegate?
+    
+    private var keyboardFields: [UIView] = []
+    
     //MARK: - Subviews
-    private(set) lazy var bookImage: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
+    
+    
+//    private(set) lazy var bookImage: UIImageView = {
+//        let imageView = UIImageView()
+//        imageView.translatesAutoresizingMaskIntoConstraints = false
+//        
+//        imageView.image = UIImage(named: "placeholder")
+//        
+//        imageView.layer.masksToBounds = false
+//        imageView.layer.shadowColor = UIColor.black.cgColor
+//        imageView.layer.shadowOpacity = 0.35
+//        imageView.layer.shadowOffset = CGSize(width: -3, height: 4)
+//        imageView.layer.shadowRadius = 5
+//
+//        
+//        return imageView
+//    }()
+    
+    private(set) lazy var addCoverButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
         
-        imageView.image = UIImage(named: "placeholder")
+        let image = UIImage(named: "placeholder")
+        button.setImage(image, for: .normal)
         
-        imageView.layer.masksToBounds = false
-        imageView.layer.shadowColor = UIColor.black.cgColor
-        imageView.layer.shadowOpacity = 0.35
-        imageView.layer.shadowOffset = CGSize(width: -3, height: 4)
-        imageView.layer.shadowRadius = 5
-
+        button.layer.masksToBounds = false
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOpacity = 0.35
+        button.layer.shadowOffset = CGSize(width: -3, height: 4)
+        button.layer.shadowRadius = 5
         
-        return imageView
+        let action = UIAction { _ in
+            self.delegate?.didTapAddCover()
+        }
+        
+        button.addAction(action, for: .touchUpInside)
+        
+        return button
     }()
-    
-    //TODO: Criar um rect do tamanho do Livro
-    
     
     private(set) lazy var titleTextField: UITextField = {
         let textField = UITextField()
@@ -38,6 +68,12 @@ class NewBookView: UIView {
         textField.textColor = .black
         textField.textAlignment = .left
         textField.placeholder = "type the title..."
+        textField.autocorrectionType = .no
+        
+        textField.attributedPlaceholder = NSAttributedString(
+            string: "type the title...",
+            attributes: [.foregroundColor: UIColor.sBegeOpaque]
+        )
         
         return textField
     }()
@@ -50,6 +86,12 @@ class NewBookView: UIView {
         textField.textColor = .black
         textField.textAlignment = .right
         textField.placeholder = "type the author..."
+        textField.autocorrectionType = .no
+        
+        textField.attributedPlaceholder = NSAttributedString(
+            string: "type the author...",
+            attributes: [.foregroundColor: UIColor.sBegeOpaque]
+        )
         
         return textField
     }()
@@ -73,81 +115,72 @@ class NewBookView: UIView {
         view.translatesAutoresizingMaskIntoConstraints = false
         
         view.backgroundColor = .clear
-        
         view.layer.borderWidth = 1.5
         view.layer.borderColor = UIColor.black.cgColor
         
         return view
     }()
     
-    private(set) lazy var reviewTextField: UITextField = {
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        
-        textField.font = UIFont.systemFont(ofSize: 12, weight: .regular)
-        textField.textColor = .black
-        textField.textAlignment = .left
-        textField.placeholder = "type the review..."
-        
-        return textField
-    }()
+//    private(set) lazy var reviewTextField: UITextField = {
+//        let textField = UITextField()
+//        textField.translatesAutoresizingMaskIntoConstraints = false
+//        
+//        textField.font = UIFont.systemFont(ofSize: 12, weight: .regular)
+//        textField.textColor = .black
+//        textField.textAlignment = .left
+//        textField.placeholder = "type the review..."
+//        textField.autocorrectionType = .no
+//        
+//        textField.attributedPlaceholder = NSAttributedString(
+//            string: "type the review...",
+//            attributes: [.foregroundColor: UIColor.sBegeOpaque]
+//        )
+//        
+//        return textField
+//    }()
+    
+    private(set) lazy var reviewTextField: UITextField = CustomTextField(fontSize: 12, placeholderText: "type the review...")
     
     private(set) lazy var saveButton: UIButton = {
-        let button = labelButton(width: 64, height: 35, text: "done", fontSize: 14)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        return button
-    }()
-    
-    //MARK: - Subviews Funcs
-
-    func labelButton(width: CGFloat, height: CGFloat, text: String, fontSize: CGFloat) -> UIButton {
-        var isActive: Bool = false
-        
-        let button = squareButton(width: width, height: height)
-        
-        button.setTitle(text, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: fontSize, weight: .regular)
-        button.setTitleColor(.black, for: .normal)
-        
-        button.backgroundColor = isActive ? .sOrange : .sBege
-        
-//        let action = UIAction { [weak self] _ in
-        let action = UIAction { _ in
-            isActive = !isActive
-            button.backgroundColor = isActive ? .sOrange : .sBege
-        }
-        
-        button.addAction(action, for: .touchUpInside)
-        
-        return button
-    }
-    
-    func squareButton(width: CGFloat, height: CGFloat) -> UIButton {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        
         
         button.backgroundColor = .sOrange
         button.layer.borderWidth = 1.5
         button.layer.borderColor = UIColor.black.cgColor
         
         NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(equalToConstant: width),
-            button.heightAnchor.constraint(equalToConstant: height),
+            button.widthAnchor.constraint(equalToConstant: 64),
+            button.heightAnchor.constraint(equalToConstant: 35),
         ])
         
+        button.setTitle("done", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        button.setTitleColor(.black, for: .normal)
+        
+        button.backgroundColor = .sOrange
+        
+//        let action = UIAction { [weak self] _ in
+        let action = UIAction { _ in
+            self.delegate?.didTapDoneButton()
+        }
+        
+        button.addAction(action, for: .touchUpInside)
+        
+        
+        
         return button
-    }
-
+    }()
     
     //MARK: - Initializers
     init() {
         super.init(frame: .zero)
         
-//        setup(book)
+//        initialSetup()
         addSubViews()
         setupConstraints()
+        
+        configureKeyboardNavigation(fields: [titleTextField, authorTextField, reviewTextField])
     }
     
     @available(*, unavailable)
@@ -157,16 +190,82 @@ class NewBookView: UIView {
     
     //MARK: - Setup Methods
     
-//    private func setup(_ book: Book) {
-//        bookImage.image = UIImage(named: book.imageName)
-//        titleTextField.text = book.title
-//        authorTextField.text = book.author
-//        reviewTextField.text = book.review
+//    private func initialSetup() {
+//        bookImage.image = UIImage(named: "placeholder")
+//        titleTextField.placeholder = "type the title..."
+//        authorTextField.text = "type the author..."
+//        reviewTextField.text = "type the review"
 //    }
+    
+    func configureKeyboardNavigation(fields: [UIView]) {
+        keyboardFields = fields
+        
+        //ele constrói uma toolbar para cada campo
+        for (index, field) in fields.enumerated() {
+            let toolbar = makeAcessoryToolbar(forIndex: index)
+            if let textField = field as? UITextField {
+                textField.inputAccessoryView = toolbar
+            } else if let textView = field as? UITextView {
+                textView.inputAccessoryView = toolbar
+            } else {
+                // não é input, pule
+            }
+            
+        }
+    }
+    
+    func makeAcessoryToolbar(forIndex index: Int) -> UIToolbar {
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        
+        let flexible = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneTapped(_:)))
+        
+        toolbar.items = [flexible, done]
+        return toolbar
+        
+    }
+    
+    private func currentFirstResponderIndex() -> Int? {
+        for (idx, view) in keyboardFields.enumerated() {
+            if view.isFirstResponder {
+                return idx
+            }
+        }
+        return nil
+    }
+    
+    @objc private func doneTapped(_ sender: UIBarButtonItem) {
+        guard let currentIndex = currentFirstResponderIndex() else {
+            self.endEditing(true)
+            return
+        }
+
+        if currentIndex < keyboardFields.count - 1 {
+            keyboardFields[currentIndex + 1].becomeFirstResponder()
+        } else {
+            endEditing(true)
+        }
+//        let lastIndex = keyboardFields.count - 1
+//
+//        if currentIndex < lastIndex {
+//            let nextIndex = currentIndex + 1
+//            guard nextIndex >= 0 && nextIndex < keyboardFields.count else {
+//                self.endEditing(true)
+//                return
+//            }
+//            keyboardFields[nextIndex].becomeFirstResponder()
+//        } else {
+//            // estou no último campo → fecha o teclado
+//            self.endEditing(true)
+//            //aqui se eu quisese eu poderia colocar a acao de save
+//        }
+        
+    }
     
     
     private func addSubViews() {
-        addSubview(bookImage)
+        addSubview(addCoverButton)
         addSubview(titleTextField)
         addSubview(authorTextField)
         addSubview(reviewLabelIndicator)
@@ -181,13 +280,13 @@ class NewBookView: UIView {
         let outterPadding: CGFloat = 32
         
         NSLayoutConstraint.activate([
-            bookImage.centerXAnchor.constraint(equalTo: centerXAnchor),
-            bookImage.topAnchor.constraint(equalTo: topAnchor, constant: outterPadding),
-            bookImage.widthAnchor.constraint(equalToConstant: 150),
-            bookImage.heightAnchor.constraint(equalToConstant: 225),
+            addCoverButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            addCoverButton.topAnchor.constraint(equalTo: topAnchor, constant: outterPadding),
+            addCoverButton.widthAnchor.constraint(equalToConstant: 150),
+            addCoverButton.heightAnchor.constraint(equalToConstant: 225),
             
             //image - title: 16
-            titleTextField.topAnchor.constraint(equalTo: bookImage.bottomAnchor, constant: innerPadding + 8),
+            titleTextField.topAnchor.constraint(equalTo: addCoverButton.bottomAnchor, constant: innerPadding + 8),
             titleTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: outterPadding),
             titleTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -outterPadding),
             
@@ -209,7 +308,6 @@ class NewBookView: UIView {
             reviewTextField.topAnchor.constraint(equalTo: reviewLabelIndicator.bottomAnchor, constant: 20),
             reviewTextField.leadingAnchor.constraint(equalTo: reviewRect.leadingAnchor, constant: 12),
             reviewTextField.trailingAnchor.constraint(equalTo: reviewRect.trailingAnchor, constant: -12),
-            
             
             saveButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
             saveButton.centerXAnchor.constraint(equalTo: centerXAnchor),
