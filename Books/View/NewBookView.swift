@@ -13,19 +13,18 @@ protocol NewBookViewDelegate: AnyObject {
     func didTapAddCover()
     
     //Update
-    func didTapOptionsButton()
     func didTapEditButton()
     
     //Delete
     func didTapDeleteButton()
     
     //Save
-    func didTapDoneButton()
+    func didTapDoneButton(state: BookViewState)
 }
 
 
 enum BookViewState {
-    case create, update, read, delete
+    case create, edit, read
 }
 
 
@@ -48,6 +47,7 @@ class NewBookView: UIView {
         
         let image = UIImage(named: "placeholder")
         button.setImage(image, for: .normal)
+        button.imageView?.contentMode = .scaleAspectFill
         
         button.layer.masksToBounds = false
         button.layer.shadowColor = UIColor.black.cgColor
@@ -60,6 +60,28 @@ class NewBookView: UIView {
         }
         
         button.addAction(action, for: .touchUpInside)
+        
+        return button
+    }()
+    
+    private(set) lazy var optionsButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+        button.tintColor = .black
+        
+        let editAction = UIAction(title: "Editar", image: UIImage(systemName: "pencil")) { _ in
+            self.state = .edit
+//            self.delegate?.didTapEditButton()
+        }
+        let deleteAction = UIAction(title: "Excluir", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+            self.delegate?.didTapDeleteButton()
+        }
+
+        // associa o menu ao botão
+        button.menu = UIMenu(title: "", children: [editAction, deleteAction])
+        button.showsMenuAsPrimaryAction = true
         
         return button
     }()
@@ -97,7 +119,7 @@ class NewBookView: UIView {
         
 //        let action = UIAction { [weak self] _ in
         let action = UIAction { _ in
-            self.delegate?.didTapDoneButton()
+            self.delegate?.didTapDoneButton(state: self.state)
         }
         
         button.addAction(action, for: .touchUpInside)
@@ -142,6 +164,7 @@ class NewBookView: UIView {
     
     private func addSubViews() {
         addSubview(coverButton)
+        addSubview(optionsButton)
         addSubview(titleTextField)
         addSubview(authorTextField)
         addSubview(reviewLabelIndicator)
@@ -160,6 +183,11 @@ class NewBookView: UIView {
             coverButton.topAnchor.constraint(equalTo: topAnchor, constant: outterPadding),
             coverButton.widthAnchor.constraint(equalToConstant: 150),
             coverButton.heightAnchor.constraint(equalToConstant: 225),
+            
+            optionsButton.topAnchor.constraint(equalTo: topAnchor, constant: outterPadding),
+            optionsButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -outterPadding),
+            optionsButton.widthAnchor.constraint(equalToConstant: 20),
+            optionsButton.heightAnchor.constraint(equalToConstant: 20),
             
             //image - title: 16
             titleTextField.topAnchor.constraint(equalTo: coverButton.bottomAnchor, constant: innerPadding + 8),
@@ -202,29 +230,28 @@ class NewBookView: UIView {
     private func updateUI(for state: BookViewState) {
         switch state {
         case .create:
-            coverButton.isEnabled = true
+            coverButton.isUserInteractionEnabled = true
+            optionsButton.isHidden = true
             titleTextField.isEnabled = true
             authorTextField.isEnabled = true
             reviewTextField.isEnabled = true
             saveButton.isHidden = false
 
         case .read:
-            coverButton.isEnabled = false
+            coverButton.isUserInteractionEnabled = false
+            optionsButton.isHidden = false
             titleTextField.isEnabled = false
             authorTextField.isEnabled = false
             reviewTextField.isEnabled = false
             saveButton.isHidden = true
 
-        case .update:
-            coverButton.isEnabled = true
+        case .edit:
+            coverButton.isUserInteractionEnabled = true
+            optionsButton.isHidden = true
             titleTextField.isEnabled = true
             authorTextField.isEnabled = true
             reviewTextField.isEnabled = true
             saveButton.isHidden = false
-
-        case .delete:
-            // talvez exibir alerta ou deixar tudo cinza
-            break
         }
     }
 

@@ -17,12 +17,15 @@ class NewBookViewController: UIViewController {
     private let bookRepository = BookRepository()
     
     private var selectedCoverImage: UIImage?
+    private var selectedBookEntity: BookEntity?
     
     
     
     //MARK: - Initializers
-    init(book: Book? = nil) {
+    init(book: Book? = nil, entity: BookEntity? = nil) {
+        
         newBookView = NewBookView(book: book)
+        selectedBookEntity = entity
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -86,11 +89,7 @@ extension NewBookViewController: NewBookViewDelegate {
         presentPhotoPicker()
     }
     
-    //Update 
-    func didTapOptionsButton() {
-        print("Option Button")
-    }
-    
+    //Update
     func didTapEditButton() {
         print("Edit Button")
     }
@@ -98,10 +97,29 @@ extension NewBookViewController: NewBookViewDelegate {
     //Delete
     func didTapDeleteButton() {
         print("Delete Button")
+        
+        let alert = UIAlertController(
+            title: "Do you want to delete?",
+            message: "This action cannot be undo.",
+            preferredStyle: .alert
+        )
+        
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+            guard let entity = self?.selectedBookEntity else { return }
+            self?.bookRepository.delete(entity)
+            
+            self?.dismiss(animated: true)
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+
+        present(alert, animated: true, completion: nil)
     }
     
     //Save
-    func didTapDoneButton() {
+    func didTapDoneButton(state: BookViewState) {
         
         let title = newBookView.titleTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
         guard let title = title, !title.isEmpty else {
@@ -111,6 +129,7 @@ extension NewBookViewController: NewBookViewDelegate {
         
         let author = newBookView.authorTextField.text ?? "No Author"
         let review = newBookView.reviewTextField.text ?? "Empty review."
+        selectedCoverImage = newBookView.coverButton.imageView?.image
         //rating
         
         let tempBook = Book(
@@ -124,9 +143,18 @@ extension NewBookViewController: NewBookViewDelegate {
         )
         
         //no repo: UIImage -> Data
-        bookRepository.create(from: tempBook)
+        switch (state){
+        case .create:
+            bookRepository.create(from: tempBook)
+            showSimpleMessageAlert(title: "Sucesso.", message: "Livro criado com sucesso!")
+        case .edit:
+            guard let selectedBookEntity else { break }
+            bookRepository.update(entity: selectedBookEntity, from: tempBook)
+            showSimpleMessageAlert(title: "Sucesso.", message: "Livro atualizado com sucesso!")
+        case .read:
+            break
+        }
         
-        showSimpleMessageAlert(title: "Sucesso.", message: "Livro incluído com sucesso!")
     }
 }
 

@@ -112,7 +112,7 @@ extension BookListViewController: UICollectionViewDelegateFlowLayout {
         ///a Entity vira Struct
         let bookStruct = entity.toStruct()
         
-        let newBookVC = NewBookViewController(book: bookStruct)
+        let newBookVC = NewBookViewController(book: bookStruct, entity: entity)
         present(newBookVC, animated: true)
 //        let bookVC = BookViewController(book: bookStruct)
 //        present(bookVC, animated: true)
@@ -132,7 +132,12 @@ extension BookListViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // reaplica snapshot simples; para mudanças grandes você pode diffar manualmente
         /// tipo um published nesse caso? reativo as mudanças...
-        applySnapshot()
+        
+        
+//        applySnapshot() //por algum motivo isso nao tava funcionando, top
+        DispatchQueue.main.async {
+              self.applySnapshot(animatingDifferences: true)
+          }
     }
 }
 

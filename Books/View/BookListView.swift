@@ -24,7 +24,7 @@ class BookListView: UIView {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.translatesAutoresizingMaskIntoConstraints = false
         
-        view.backgroundColor = .sBege
+        view.backgroundColor = .clear
         
         return view
     }()
@@ -38,7 +38,18 @@ class BookListView: UIView {
         view.layer.borderWidth = 1.5
         view.layer.borderColor = UIColor.black.cgColor
         
+        
         return view
+    }()
+    
+    private(set) lazy var logotypeImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        imageView.image = UIImage(named: "Logotype")
+        imageView.contentMode = .scaleAspectFit
+        
+        return imageView
     }()
     
 
@@ -57,6 +68,9 @@ class BookListView: UIView {
         stackView.alignment = .center
         stackView.spacing = 20
         
+        
+        stackView.isHidden = true //TODO: Tirar se eu implementar tags
+        
         return stackView
     }()
     
@@ -69,7 +83,7 @@ class BookListView: UIView {
         view.layer.borderColor = UIColor.black.cgColor
         
         
-        let button = sfSymbolButton(width: 35, height: 35, systemName: "plus", fontSize: 17)
+        let button = sfSymbolButton(width: 40, height: 40, systemName: "plus", fontSize: 18)
         button.translatesAutoresizingMaskIntoConstraints = false
         
         
@@ -208,7 +222,8 @@ class BookListView: UIView {
     
     private func addSubviews() {
         addSubview(toolBar)
-        addSubview(tagsHStack)
+        addSubview(logotypeImage)
+//        addSubview(tagsHStack)
         addSubview(bookListCollectionView)
         addSubview(tabBar)
     }
@@ -221,12 +236,18 @@ class BookListView: UIView {
             toolBar.leadingAnchor.constraint(equalTo: leadingAnchor),
             toolBar.trailingAnchor.constraint(equalTo: trailingAnchor),
             
-            tagsHStack.topAnchor.constraint(equalTo: toolBar.bottomAnchor),
-            tagsHStack.bottomAnchor.constraint(equalTo: bookListCollectionView.topAnchor),
-            tagsHStack.heightAnchor.constraint(greaterThanOrEqualToConstant: 45),
-            tagsHStack.centerXAnchor.constraint(equalTo: centerXAnchor),
+            logotypeImage.centerXAnchor.constraint(equalTo: centerXAnchor),
+            logotypeImage.bottomAnchor.constraint(equalTo: toolBar.bottomAnchor, constant: -12),
+            logotypeImage.heightAnchor.constraint(equalToConstant: 55),
             
-            bookListCollectionView.topAnchor.constraint(equalTo: tagsHStack.bottomAnchor, constant: 0),
+            
+            
+//            tagsHStack.topAnchor.constraint(equalTo: toolBar.bottomAnchor),
+//            tagsHStack.bottomAnchor.constraint(equalTo: bookListCollectionView.topAnchor),
+//            tagsHStack.heightAnchor.constraint(greaterThanOrEqualToConstant: 45),
+//            tagsHStack.centerXAnchor.constraint(equalTo: centerXAnchor),
+            
+            bookListCollectionView.topAnchor.constraint(equalTo: toolBar.bottomAnchor, constant: 0),
             bookListCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 24),
             bookListCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -24),
             bookListCollectionView.bottomAnchor.constraint(equalTo: tabBar.topAnchor, constant: 0),

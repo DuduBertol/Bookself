@@ -112,6 +112,7 @@ final class BookRepository {
 
         do {
             try context.save()
+            print("Contexto salvo")
         } catch {
             context.rollback()
             print("Repository save error: \(error)")
